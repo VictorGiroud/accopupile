@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import Playground from "./playground/Playground";
+import styled, { ThemeProvider } from "styled-components";
+import theme from "./theme";
+import TimerContext from "./contexts/TimerContext";
+import useTimer from "./hooks/useTimer";
+import LeftMenu from "./menus/LeftMenu";
 
-function App() {
+const AppContainer = styled.div`
+  display: flex;
+  background-color: ${(props) => props.theme.grass};
+  height: 100%;
+`;
+
+const MenuContainer = styled.div`
+  flex: 1;
+`;
+
+const PlaygroundContainer = styled.div`
+  flex: 0 0 auto;
+`;
+
+const App = () => {
+  const { elapsedTime, handleStart } = useTimer(0);
+
+  useEffect(() => {
+    handleStart();
+  }, [handleStart]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <TimerContext.Provider value={elapsedTime}>
+        <AppContainer>
+          <MenuContainer>
+            <LeftMenu />
+          </MenuContainer>
+          <PlaygroundContainer>
+            <Playground />
+          </PlaygroundContainer>
+          <MenuContainer></MenuContainer>
+        </AppContainer>
+      </TimerContext.Provider>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
